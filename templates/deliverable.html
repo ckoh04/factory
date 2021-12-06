@@ -1,0 +1,20 @@
+<doctype html>
+<title>List of Deliverables</title>
+
+<p><a href="http://127.0.0.1:5000/table_list"> Index </a></p>
+<p><a href="{{ url_for('.add_customer_view') }}"> Add Deliverable </a></p>
+
+
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</doctype>
+
+{{ table }}
