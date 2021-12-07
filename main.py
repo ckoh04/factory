@@ -1,6 +1,7 @@
 import pymysql
 from app import app
-from tables import Customer, Employee, Deliverable
+from tables import Customer, _Customer, Employee, _Employee, \
+    Deliverable, _Deliverable, Product, _Product, Delivery, OrderList, _Delivery, _Customer_Delivery, _Customer_Transactions
 from connection import mysql
 from flask import flash, session, render_template, request, redirect
 
@@ -402,6 +403,231 @@ def delete_deliverable(id):
         conn.close()
 
 '''
+##################################################################################################################
+'''
+
+
+@app.route('/new_product')
+def add_product_view():
+    return render_template('add_product.html')
+
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    try:
+        _product_id = request.form['inputProductID']
+        _product_name = request.form['inputProductName']
+        _classification = request.form['inputClassification']
+        _price = request.form['inputPrice']
+        _inventory = request.form['inputInventory']
+
+        if _product_id and _product_name and _classification and _price and _inventory and request.method == 'POST':
+            sql = "INSERT INTO product(product_id, product_name, classification, price, inventory) VALUES(%s, %s, %s, %s, %s)"
+            data = (_product_id, _product_name, _classification, _price, _inventory)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            flash('Completed: Product added.')
+            return redirect('/products')
+        else:
+            return 'Error while adding product'
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/products')
+def products():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM product")
+        rows = cursor.fetchall()
+        table = Product(rows)
+        table.border = True
+        return render_template('product.html', table=table)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/edit_product/<int:id>')
+def edit_product(id):
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM product WHERE product_id=%s", id)
+        row = cursor.fetchone()
+        if row:
+            return render_template('edit_product.html', row=row)
+        else:
+            return 'Error loading #{id}'.format(id=id)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/update_product', methods=['POST'])
+def update_product():
+    try:
+        _product_id = request.form['inputProductID']
+        _product_name = request.form['inputProductName']
+        _classification = request.form['inputClassification']
+        _price = request.form['inputPrice']
+        _inventory = request.form['inputInventory']
+
+        if _product_id and _product_name and _classification and _price and _inventory and request.method == 'POST':
+            sql = "UPDATE product SET product_id=%s, product_name=%s, classification=%s, price=%s, inventory%s WHERE product_id=%s"
+            data = (_product_id, _product_name, _classification, _price, _inventory)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            flash('Product information updated successfully!')
+            return redirect('/products')
+        else:
+            return 'Error while updating product'
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/delete_product/<int:id>')
+def delete_product(id):
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM product WHERE product_id=%s", (id,))
+        conn.commit()
+        flash('Product deleted successfully!')
+        return redirect('/products')
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+'''
+##################################################################################################################
+'''
+
+@app.route('/new_delivery')
+def add_delivery_view():
+    return render_template('add_delivery.html')
+
+
+@app.route('/add_delivery', methods=['POST'])
+def add_delivery():
+    try:
+        _tracking_number = request.form['inputTrackingNumber']
+        _carrier_name = request.form['inputCarrierName']
+        _contact = request.form['inputContact']
+        _deliverable_id = request.form['inputDeliverableID']
+
+        if _tracking_number and _carrier_name and _contact and _deliverable_id and request.method == 'POST':
+            sql = "INSERT INTO product(tracking_number, carrier_name, contact, deliverable_id) VALUES(%s, %s, %s, %s)"
+            data = (_tracking_number, _carrier_name, _contact, _deliverable_id)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            flash('Completed: Delivery added.')
+            return redirect('/deliveries')
+        else:
+            return 'Error while adding delivery'
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/deliveries')
+def deliveries():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM delivery")
+        rows = cursor.fetchall()
+        table = Delivery(rows)
+        table.border = True
+        return render_template('delivery.html', table=table)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/edit_delivery/<int:id>')
+def edit_delivery(id):
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM delivery WHERE tracking_number=%s", id)
+        row = cursor.fetchone()
+        if row:
+            return render_template('edit_delivery.html', row=row)
+        else:
+            return 'Error loading #{id}'.format(id=id)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/update_delivery', methods=['POST'])
+def update_delivery():
+    try:
+        _tracking_number = request.form['inputTrackingNumber']
+        _carrier_name = request.form['inputCarrierName']
+        _contact = request.form['inputContact']
+        _deliverable_id = request.form['inputDeliverableID']
+
+        if _tracking_number and _carrier_name and _contact and _deliverable_id and request.method == 'POST':
+            sql = "UPDATE delivery SET tracking_number=%s, carrier_name=%s, contact=%s, deliverable_id=%s WHERE tracking_number=%s"
+            data = (_tracking_number, _carrier_name, _contact, _deliverable_id)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            flash('Delivery information updated successfully!')
+            return redirect('/deliveries')
+        else:
+            return 'Error while updating delivery'
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/delete_delivery/<int:id>')
+def delete_delivery(id):
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM delivery WHERE tracking_number=%s", (id,))
+        conn.commit()
+        flash('Delivery deleted successfully!')
+        return redirect('/deliveries')
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+'''
 ############################################Special Queries###########################################################
 '''
 @app.route('/long_term_employees')
@@ -409,9 +635,10 @@ def long_term_employees():
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT * FROM smart_star.employee WHERE date_of_entry < '2010-01-01 00:00:00'")
+        cursor.execute("SELECT employee_id, employee_name, department, dept_position, date_of_entry  FROM Long_Term_Workers")
+        #SELECT * FROM smart_star.employee WHERE date_of_entry < '2010-01-01 00:00:00'
         rows = cursor.fetchall()
-        table = Employee(rows)
+        table = _Employee(rows)
         table.border = True
         return render_template('special_queries.html', table=table)
     except Exception as e:
@@ -419,5 +646,54 @@ def long_term_employees():
     finally:
         cursor.close()
         conn.close()
+
+@app.route('/customer_delivery')
+def customer_delivery():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM Customer_Delivery")
+        rows = cursor.fetchall()
+        table = _Customer_Delivery(rows)
+        table.border = True
+        return render_template('special_queries.html', table=table)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/customer_transactions')
+def customer_transactions():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM Customer_Transactions")
+        rows = cursor.fetchall()
+        table = _Customer_Transactions(rows)
+        table.border = True
+        return render_template('special_queries.html', table=table)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/order_list')
+def order_list():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM smart_star.order_list")
+        rows = cursor.fetchall()
+        table = OrderList(rows)
+        table.border = True
+        return render_template('special_queries.html', table=table)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
 if __name__ == "__main__":
     app.run()
