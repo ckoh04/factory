@@ -5,6 +5,7 @@ from tables import Customer, _Customer, Employee, _Employee, \
 from connection import mysql
 from flask import flash, session, render_template, request, redirect
 
+
 @app.route('/table_list')
 def show_tables():
     return render_template('table_list.html')
