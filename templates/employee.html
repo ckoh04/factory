@@ -1,9 +1,12 @@
 <doctype html>
+		 <div id="logo">
+		 <img align="right" src="{{url_for('static', filename ='logo.png') }}" width="100" height="100" >
+	</div>
 <title>List of Employees</title>
 	<h2>Employees</h2>
 
-<p><a href="http://127.0.0.1:5000/table_list"> Index </a></p>
-<p><a href="{{ url_for('.add_employee_view') }}"> Add Employee </a></p>
+<p><a href="http://127.0.0.1:5000/table_list"> <button>Index</button> </a></p>
+<p><a href="{{ url_for('.add_employee_view') }}"> <button>Add Employee</button> </a></p>
 
 
 <p>

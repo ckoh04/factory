@@ -6,6 +6,7 @@ from connection import mysql
 from flask import flash, session, render_template, request, redirect
 
 
+
 @app.route('/table_list')
 def show_tables():
     return render_template('table_list.html')
@@ -170,8 +171,6 @@ def delete_customer(id):
     finally:
         cursor.close()
         conn.close()
-
-
 '''
 ##################################################################################################################
 '''
@@ -182,6 +181,8 @@ def add_employee_view():
 
 @app.route('/add_employee', methods=['POST'])
 def add_employee():
+    conn = None
+    cursor = None
     try:
         _employee_id = request.form['inputEmployeeID']
         _ssn = request.form['inputSSN']
@@ -210,6 +211,8 @@ def add_employee():
 
 @app.route('/employees')
 def employees():
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -227,6 +230,8 @@ def employees():
 
 @app.route('/edit_employee/<int:id>')
 def edit_employee(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -245,6 +250,8 @@ def edit_employee(id):
 
 @app.route('/update_employee', methods=['POST'])
 def update_employee():
+    conn = None
+    cursor = None
     try:
         _employee_id = request.form['inputEmployeeID']
         _ssn = request.form['inputSSN']
@@ -273,6 +280,8 @@ def update_employee():
 
 @app.route('/delete_employee/<int:id>')
 def delete_employee(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -299,6 +308,8 @@ def add_deliverable_view():
 
 @app.route('/add_deliverable', methods=['POST'])
 def add_deliverable():
+    conn = None
+    cursor = None
     try:
         _deliverable_id = request.form['inputDeliverableID']
         _order_date = request.form['inputOrderDate']
@@ -327,6 +338,8 @@ def add_deliverable():
 
 @app.route('/deliverables')
 def deliverables():
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -344,6 +357,8 @@ def deliverables():
 
 @app.route('/edit_deliverable/<int:id>')
 def edit_deliverable(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -362,6 +377,8 @@ def edit_deliverable(id):
 
 @app.route('/update_deliverable', methods=['POST'])
 def update_deliverable():
+    conn = None
+    cursor = None
     try:
         _deliverable_id = request.form['inputDeliverableID']
         _order_date = request.form['inputOrderDate']
@@ -390,6 +407,8 @@ def update_deliverable():
 
 @app.route('/delete_deliverable/<int:id>')
 def delete_deliverable(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -415,6 +434,8 @@ def add_product_view():
 
 @app.route('/add_product', methods=['POST'])
 def add_product():
+    conn = None
+    cursor = None
     try:
         _product_id = request.form['inputProductID']
         _product_name = request.form['inputProductName']
@@ -442,6 +463,8 @@ def add_product():
 
 @app.route('/products')
 def products():
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -459,6 +482,8 @@ def products():
 
 @app.route('/edit_product/<int:id>')
 def edit_product(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -477,6 +502,8 @@ def edit_product(id):
 
 @app.route('/update_product', methods=['POST'])
 def update_product():
+    conn = None
+    cursor = None
     try:
         _product_id = request.form['inputProductID']
         _product_name = request.form['inputProductName']
@@ -504,6 +531,8 @@ def update_product():
 
 @app.route('/delete_product/<int:id>')
 def delete_product(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -554,6 +583,8 @@ def add_delivery():
 
 @app.route('/deliveries')
 def deliveries():
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -571,6 +602,8 @@ def deliveries():
 
 @app.route('/edit_delivery/<int:id>')
 def edit_delivery(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -589,6 +622,8 @@ def edit_delivery(id):
 
 @app.route('/update_delivery', methods=['POST'])
 def update_delivery():
+    conn = None
+    cursor = None
     try:
         _tracking_number = request.form['inputTrackingNumber']
         _carrier_name = request.form['inputCarrierName']
@@ -597,7 +632,7 @@ def update_delivery():
 
         if _tracking_number and _carrier_name and _contact and _deliverable_id and request.method == 'POST':
             sql = "UPDATE delivery SET tracking_number=%s, carrier_name=%s, contact=%s, deliverable_id=%s WHERE tracking_number=%s"
-            data = (_tracking_number, _carrier_name, _contact, _deliverable_id)
+            data = (_tracking_number, _carrier_name, _contact, _deliverable_id, )
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.execute(sql, data)
@@ -615,6 +650,8 @@ def update_delivery():
 
 @app.route('/delete_delivery/<int:id>')
 def delete_delivery(id):
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -680,8 +717,41 @@ def customer_transactions():
         cursor.close()
         conn.close()
 
+#################################################################
+@app.route('/new_order')
+def add_order_view():
+    return render_template('add_order.html')
+
+@app.route('/add_order', methods=['POST'])
+def add_order():
+    conn = None
+    cursor = None
+    try:
+        _deliverable_id = request.form['inputDeliverableID']
+        _product_id = request.form['inputProductID']
+        _quantity = request.form['inputQuantity']
+
+        if _deliverable_id and _product_id and _quantity and request.method == 'POST':
+            sql = "INSERT INTO order_list(deliverable_id, product_id, quantity) VALUES(%s, %s, %s)"
+            data = (_deliverable_id, _product_id, _quantity)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            flash('Completed: Order added.')
+            return redirect('/order_list')
+        else:
+            return 'Error while adding order'
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.route('/order_list')
 def order_list():
+    conn = None
+    cursor = None
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -689,7 +759,53 @@ def order_list():
         rows = cursor.fetchall()
         table = OrderList(rows)
         table.border = True
-        return render_template('special_queries.html', table=table)
+        return render_template('order_list.html', table=table)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/edit_order/<int:id>')
+def edit_order(id):
+    conn = None
+    cursor = None
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM order_list WHERE deliverable_id =%s", id)
+        row = cursor.fetchone()
+        if row:
+            return render_template('edit_order.html', row=row)
+        else:
+            return 'Error loading #{id}'.format(id=id)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/update_order', methods=['POST'])
+def update_order():
+    conn = None
+    cursor = None
+    try:
+        _deliverable_id = request.form['inputDeliverableID']
+        _product_id = request.form['inputProductID']
+        _quantity = request.form['inputQuantity']
+
+        if _deliverable_id and _product_id and _quantity and request.method == 'POST':
+            sql = "UPDATE order_list SET quantity=%s WHERE deliverable_id=%s"
+            data = (_quantity, _deliverable_id)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            flash('Order information updated successfully!')
+            return redirect('/order_list')
+        else:
+            return 'Error while updating delivery'
     except Exception as e:
         print(e)
     finally:

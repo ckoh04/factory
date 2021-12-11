@@ -1,0 +1,23 @@
+<doctype html>
+<title>Add Order</title>
+		 <div id="logo">
+		 <img align="right" src="{{url_for('static', filename ='logo.png') }}" width="100" height="100" >
+	</div>
+<h2>Add Order</h2>
+<form method="post" action="/add_order">
+    <dl>
+		<p>
+			<input name="inputDeliverableID" value="" type="text" placeholder="Deliverable ID" autocomplete="off" required>
+		</p>
+		<p>
+			<input name="inputProductID" value="" type="text" placeholder="Product ID" autocomplete="off" required>
+		</p>
+        		<p>
+			<input name="inputQuantity" value="" type="text" placeholder="Quantity" autocomplete="off" required>
+		</p>
+    </dl>
+    <p>
+		<input type="submit" value="Submit">
+	</p>
+</form>
+</doctype>

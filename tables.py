@@ -102,6 +102,7 @@ class OrderList(Table):
     deliverable_id = Col('Deliverable ID' )
     product_id = Col('Product ID')
     quantity = Col('Quantity')
+    delete = LinkCol('Edit', 'edit_order', url_kwargs=dict(id='deliverable_id'))
 
 class _Customer_Transactions(Table):
     customer_name = Col("Customer Name")
